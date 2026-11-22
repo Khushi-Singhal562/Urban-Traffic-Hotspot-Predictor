@@ -1,0 +1,850 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            Urban Traffic Hotspot Predictor
+        </div>
+
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+
+    </nav>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="container">
+
+        <h1>Traffic Dashboard</h1>
+
+        <p class="welcome">
+            Welcome to Urban Traffic Hotspot Predictor
+        </p>
+
+        <!-- STATISTICS -->
+        <div class="stats-container">
+
+            <div class="stat-card">
+                <h3>Total Records</h3>
+                <p>{{ total_records }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Vehicles</h3>
+                <p>{{ total_vehicles }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Average Speed</h3>
+                <p>{{ average_speed }} km/h</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>High Hotspots</h3>
+                <p>{{ high_hotspots }}</p>
+            </div>
+
+        </div>
+
+        <!-- INTERACTIVE TRAFFIC MAP -->
+        <div class="map-section">
+
+            <div class="map-header">
+
+                <div>
+                    <h2>Live Traffic Monitoring</h2>
+                    <p>Interactive Smart City Traffic Map</p>
+                </div>
+
+                <span class="live-badge">
+                    ● LIVE MONITORING
+                </span>
+
+            </div>
+
+            <!-- MAP LEGEND -->
+            <div class="map-legend">
+                <span><i class="dot green"></i> Low Traffic</span>
+                <span><i class="dot orange"></i> Medium Traffic</span>
+                <span><i class="dot red"></i> High Traffic</span>
+            </div>
+
+            <!-- LOCATION SEARCH -->
+            <div class="map-search">
+
+                <input
+                    type="text"
+                    id="mapSearch"
+                    placeholder="Search location e.g. Greater Noida"
+                >
+
+                <button type="button" onclick="searchLocation()">
+                    Search
+                </button>
+
+            </div>
+
+            <!-- MAP -->
+            <div id="trafficMap"></div>
+
+            <!-- LIVE TRAFFIC DETAILS -->
+            <div class="live-traffic-details">
+
+                <h3>Greater Noida Live Traffic Details</h3>
+
+                <div class="traffic-cards">
+
+                    <div class="stat-card">
+                        <h3>Current Speed</h3>
+                        <p><span id="currentSpeed">--</span> km/h</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Free Flow Speed</h3>
+                        <p><span id="freeFlowSpeed">--</span> km/h</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Congestion</h3>
+                        <p><span id="congestion">--</span>%</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Traffic Level</h3>
+                        <p id="trafficLevel">--</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Location</h3>
+                        <p id="trafficLocation">--</p>
+                    </div>
+
+                </div>
+
+                <!-- TRAFFIC ALERT SYSTEM -->
+                <div class="traffic-alert-section">
+
+                    <h3>Traffic Alert System</h3>
+
+                    <div id="trafficAlert"
+                         style="
+                            padding: 15px;
+                            margin-top: 15px;
+                            border-radius: 8px;
+                            background: #e5e7eb;
+                            color: #333;
+                            font-weight: bold;
+                         ">
+
+                        Waiting for live traffic data...
+
+                    </div>
+
+                </div>
+
+                <p id="updatedTime">Last Updated: --</p>
+
+            </div>
+
+            <p class="map-note" id="liveTrafficMessage">
+                Live traffic API connected. Click below to fetch current traffic.
+            </p>
+
+            <button
+                type="button"
+                id="fetchTrafficBtn"
+                onclick="fetchLiveTraffic()">
+
+                Fetch Live Traffic
+
+            </button>
+
+        </div>
+
+        <!-- TRAFFIC ANALYTICS -->
+        <div class="analytics-section">
+
+            <h2>Traffic Analytics Overview</h2>
+
+            <p>Analyze traffic patterns and congestion levels.</p>
+
+            <div class="analytics-grid">
+
+                <div class="analytics-card">
+                    <h3>Traffic Level Distribution</h3>
+                    <canvas id="trafficLevelChart"></canvas>
+                </div>
+
+                <div class="analytics-card">
+                    <h3>Average Speed by Traffic Level</h3>
+                    <canvas id="speedChart"></canvas>
+                </div>
+
+                <div class="analytics-card">
+                    <h3>Daily Traffic Records</h3>
+                    <canvas id="dailyChart"></canvas>
+                </div>
+
+            </div>
+
+            <p id="analyticsMessage">Loading analytics...</p>
+
+        </div>
+
+        <!-- TRAFFIC RECORDS -->
+        <div class="table-section">
+
+            <h2>Traffic Records</h2>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Vehicles</th>
+                        <th>Speed</th>
+                        <th>Density</th>
+                        <th>Weather</th>
+                        <th>Accident</th>
+                        <th>Traffic Level</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for row in traffic_data %}
+
+                    <tr>
+
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.date }}</td>
+                        <td>{{ row.time }}</td>
+                        <td>{{ row.vehicle_count }}</td>
+                        <td>{{ row.average_speed }} km/h</td>
+                        <td>{{ row.traffic_density }}</td>
+                        <td>{{ row.weather }}</td>
+
+                        <td>
+                            {% if row.accident %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            {% if row.traffic_level == "High" %}
+
+                                <span class="high">High</span>
+
+                            {% elif row.traffic_level == "Medium" %}
+
+                                <span class="medium">Medium</span>
+
+                            {% else %}
+
+                                <span class="low">Low</span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="9" class="empty">
+                            No traffic records available.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- TRAFFIC FEATURES -->
+    <section class="container">
+
+        <h2>Explore Traffic Features</h2>
+
+        <div class="card-container">
+
+            <div class="card">
+                <h3>Traffic Hotspots</h3>
+                <p>Analyze traffic conditions at different locations.</p>
+
+                <a href="{{ url_for('hotspots') }}" class="btn">
+                    View Hotspots
+                </a>
+            </div>
+
+            <div class="card">
+                <h3>Traffic Prediction</h3>
+                <p>Predict traffic levels using machine learning.</p>
+
+                <a href="{{ url_for('predict') }}" class="btn">
+                    Predict Traffic
+                </a>
+            </div>
+
+            <div class="card">
+                <h3>Traffic Reports</h3>
+                <p>View traffic records stored in the database.</p>
+
+                <a href="{{ url_for('reports') }}" class="btn">
+                    View Reports
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- LEAFLET MAP JAVASCRIPT -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+
+        // =====================================
+        // INITIALIZE MAP
+        // =====================================
+
+        var map = L.map("trafficMap").setView(
+            [28.4744, 77.5040],
+            12
+        );
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution: "&copy; OpenStreetMap contributors",
+                maxZoom: 19
+            }
+        ).addTo(map);
+
+
+        // =====================================
+        // TRAFFIC MAP DATA
+        // =====================================
+
+        var trafficLocations = [];
+
+        function getMarkerColor(level) {
+
+            if (level === "High") {
+                return "#ef4444";
+            }
+
+            if (level === "Medium") {
+                return "#f59e0b";
+            }
+
+            return "#22c55e";
+        }
+
+
+        // =====================================
+        // LOAD TRAFFIC DATA FROM FLASK API
+        // =====================================
+
+        async function loadTrafficData() {
+
+            try {
+
+                const response = await fetch("/api/traffic-data");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load traffic data");
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    throw new Error("Invalid traffic data received");
+                }
+
+                trafficLocations = data;
+
+                // Remove old database markers
+                map.eachLayer(function(layer) {
+
+                    if (layer instanceof L.CircleMarker) {
+                        map.removeLayer(layer);
+                    }
+
+                });
+
+                // Add latest database markers
+                trafficLocations.forEach(function(location) {
+
+                    const latitude = Number(location.latitude);
+                    const longitude = Number(location.longitude);
+
+                    // Skip invalid coordinates
+                    if (
+                        !Number.isFinite(latitude) ||
+                        !Number.isFinite(longitude) ||
+                        latitude < -90 ||
+                        latitude > 90 ||
+                        longitude < -180 ||
+                        longitude > 180
+                    ) {
+                        return;
+                    }
+
+                    const level = location.traffic_level || "Low";
+
+                    const marker = L.circleMarker(
+                        [latitude, longitude],
+                        {
+                            radius: 9,
+                            color: getMarkerColor(level),
+                            fillColor: getMarkerColor(level),
+                            fillOpacity: 0.8,
+                            weight: 3
+                        }
+                    ).addTo(map);
+
+                    marker.bindPopup(
+                        "<b>" + (location.location || "Unknown Location") + "</b><br>" +
+                        "Traffic Level: " + level + "<br>" +
+                        "Vehicles: " + (location.vehicle_count ?? 0) + "<br>" +
+                        "Average Speed: " + (location.average_speed ?? 0) + " km/h<br>" +
+                        "Density: " + (location.traffic_density ?? 0) + "%"
+                    );
+
+                });
+
+            }
+            catch (error) {
+
+                console.error("Map Error:", error);
+
+                const message = document.getElementById("liveTrafficMessage");
+
+                if (message) {
+                    message.textContent = "Map data error: " + error.message;
+                }
+
+            }
+
+        }
+
+
+        // Load map when dashboard opens
+        loadTrafficData();
+
+        // Refresh map every 30 seconds
+        setInterval(loadTrafficData, 30000);
+
+
+        // =====================================
+        // LOCATION SEARCH
+        // =====================================
+
+        function searchLocation() {
+
+            const searchValue = document
+                .getElementById("mapSearch")
+                .value
+                .toLowerCase()
+                .trim();
+
+            if (!searchValue) {
+                alert("Please enter a location name.");
+                return;
+            }
+
+            const found = trafficLocations.find(function(location) {
+
+                return (location.location || "")
+                    .toLowerCase()
+                    .includes(searchValue);
+
+            });
+
+            if (found) {
+
+                const latitude = Number(found.latitude);
+                const longitude = Number(found.longitude);
+
+                if (
+                    !Number.isFinite(latitude) ||
+                    !Number.isFinite(longitude)
+                ) {
+                    alert("Location coordinates are invalid.");
+                    return;
+                }
+
+                map.setView([latitude, longitude], 15);
+
+            }
+            else {
+
+                alert("Location not found in database!");
+
+            }
+
+        }
+
+
+        // =====================================
+        // TRAFFIC ALERT SYSTEM
+        // =====================================
+
+        function updateTrafficAlert(level, congestion) {
+
+            const alertBox = document.getElementById("trafficAlert");
+
+            if (!alertBox) {
+                return;
+            }
+
+            if (level === "High") {
+
+                alertBox.style.background = "#fee2e2";
+                alertBox.style.color = "#991b1b";
+
+                alertBox.textContent =
+                    "HIGH TRAFFIC ALERT! Heavy congestion detected. Congestion: "
+                    + (congestion ?? "--") + "%";
+
+            }
+
+            else if (level === "Medium") {
+
+                alertBox.style.background = "#ffedd5";
+                alertBox.style.color = "#9a3412";
+
+                alertBox.textContent =
+                    "MEDIUM TRAFFIC ALERT! Traffic is increasing. Congestion: "
+                    + (congestion ?? "--") + "%";
+
+            }
+
+            else {
+
+                alertBox.style.background = "#dcfce7";
+                alertBox.style.color = "#166534";
+
+                alertBox.textContent =
+                    "LOW TRAFFIC! Traffic is normal. Congestion: "
+                    + (congestion ?? "--") + "%";
+
+            }
+
+        }
+
+
+        // =====================================
+        // FETCH LIVE TRAFFIC FROM TOMTOM API
+        // =====================================
+
+        async function fetchLiveTraffic() {
+
+            const button = document.getElementById("fetchTrafficBtn");
+            const message = document.getElementById("liveTrafficMessage");
+
+            button.disabled = true;
+            button.textContent = "Fetching...";
+
+            try {
+
+                const response = await fetch("/api/live-traffic");
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+
+                    throw new Error(
+                        result.error || "Live traffic fetch failed"
+                    );
+
+                }
+
+                const traffic = result.traffic;
+
+                if (!traffic) {
+                    throw new Error("Traffic information is missing.");
+                }
+
+                // Update current speed
+                document.getElementById("currentSpeed").textContent =
+                    traffic.current_speed ?? "--";
+
+                // Update free flow speed
+                document.getElementById("freeFlowSpeed").textContent =
+                    traffic.free_flow_speed ?? "--";
+
+                // Update congestion
+                document.getElementById("congestion").textContent =
+                    traffic.congestion ?? "--";
+
+                // Update traffic level
+                document.getElementById("trafficLevel").textContent =
+                    traffic.traffic_level ?? "--";
+
+                // Update traffic alert
+                updateTrafficAlert(
+                    traffic.traffic_level,
+                    traffic.congestion
+                );
+
+                // Update location
+                document.getElementById("trafficLocation").textContent =
+                    result.location ?? "Greater Noida";
+
+                // Update time
+                document.getElementById("updatedTime").textContent =
+                    "Last Updated: " + new Date().toLocaleString();
+
+                // Success message
+                message.textContent =
+                    "Live traffic fetched successfully and saved in MySQL!";
+
+                // Refresh map with latest database record
+                await loadTrafficData();
+
+                // Refresh analytics after new record
+                await loadTrafficAnalytics();
+
+            }
+            catch (error) {
+
+                message.textContent = error.message;
+
+                console.error("Live Traffic Error:", error);
+
+            }
+            finally {
+
+                button.disabled = false;
+                button.textContent = "Fetch Live Traffic";
+
+            }
+
+        }
+
+
+        // =====================================
+        // TRAFFIC ANALYTICS
+        // =====================================
+
+        let levelChart = null;
+        let speedChart = null;
+        let dailyChart = null;
+
+
+        async function loadTrafficAnalytics() {
+
+            const message = document.getElementById("analyticsMessage");
+
+            try {
+
+                const response = await fetch("/api/traffic-analytics");
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+
+                    throw new Error(
+                        data.error || "Analytics loading failed"
+                    );
+
+                }
+
+                // Traffic Level Distribution
+                const levels = ["Low", "Medium", "High"];
+
+                const levelCounts = levels.map(function(level) {
+
+                    const item = data.levels.find(
+                        row => row.traffic_level === level
+                    );
+
+                    return item ? Number(item.total) : 0;
+
+                });
+
+                if (levelChart) {
+                    levelChart.destroy();
+                }
+
+                levelChart = new Chart(
+                    document.getElementById("trafficLevelChart"),
+                    {
+                        type: "doughnut",
+
+                        data: {
+                            labels: levels,
+
+                            datasets: [{
+                                label: "Traffic Records",
+                                data: levelCounts,
+
+                                backgroundColor: [
+                                    "#22c55e",
+                                    "#f59e0b",
+                                    "#ef4444"
+                                ]
+                            }]
+                        },
+
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true
+                        }
+                    }
+                );
+
+
+                // Average Speed Chart
+                const speedLabels = data.speeds.map(
+                    row => row.traffic_level
+                );
+
+                const speedValues = data.speeds.map(
+                    row => Number(row.avg_speed || 0)
+                );
+
+                if (speedChart) {
+                    speedChart.destroy();
+                }
+
+                speedChart = new Chart(
+                    document.getElementById("speedChart"),
+                    {
+                        type: "bar",
+
+                        data: {
+                            labels: speedLabels,
+
+                            datasets: [{
+                                label: "Average Speed (km/h)",
+                                data: speedValues,
+                                backgroundColor: "#3b82f6"
+                            }]
+                        },
+
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    }
+                );
+
+
+                // Daily Traffic Records
+                const dailyLabels = data.daily.map(
+                    row => row.traffic_date
+                );
+
+                const dailyValues = data.daily.map(
+                    row => Number(row.total)
+                );
+
+                if (dailyChart) {
+                    dailyChart.destroy();
+                }
+
+                dailyChart = new Chart(
+                    document.getElementById("dailyChart"),
+                    {
+                        type: "line",
+
+                        data: {
+                            labels: dailyLabels,
+
+                            datasets: [{
+                                label: "Traffic Records",
+                                data: dailyValues,
+                                borderColor: "#8b5cf6",
+                                backgroundColor: "rgba(139,92,246,0.15)",
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+
+                                    ticks: {
+                                        precision: 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+                );
+
+                message.textContent =
+                    "Traffic analytics updated successfully.";
+
+            }
+            catch (error) {
+
+                console.error("Analytics Error:", error);
+
+                message.textContent =
+                    "Analytics Error: " + error.message;
+
+            }
+
+        }
+
+
+        // Load analytics when dashboard opens
+        loadTrafficAnalytics();
+
+        // Refresh analytics every 30 seconds
+        setInterval(loadTrafficAnalytics, 30000);
+
+
+    </script>
+
+</body>
+</html>

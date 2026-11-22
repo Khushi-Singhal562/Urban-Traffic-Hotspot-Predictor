@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic Prediction</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 22px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 12px;
+            background: #dcfce7;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .error {
+            margin-top: 15px;
+            color: #b91c1c;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Urban Traffic Hotspot Predictor</h2>
+    <h3>Predict Traffic Level</h3>
+
+    <form method="POST" action="{{ url_for('predict') }}">
+
+        <label>Vehicle Count</label>
+        <input type="number" name="vehicle_count"
+               min="0" required>
+
+        <label>Average Speed (km/h)</label>
+        <input type="number" name="average_speed"
+               min="0" max="200" step="0.1" required>
+
+        <label>Traffic Density</label>
+        <input type="number" name="traffic_density"
+               min="0" max="100" step="0.1" required>
+
+        <label>Weather</label>
+        <select name="weather" required>
+            <option value="Clear">Clear</option>
+            <option value="Rainy">Rainy</option>
+            <option value="Foggy">Foggy</option>
+            <option value="Cloudy">Cloudy</option>
+        </select>
+
+        <label>Accident Reported?</label>
+        <select name="accident" required>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <button type="submit">Predict Traffic</button>
+
+    </form>
+
+    {% if prediction %}
+        <div class="result">
+            Predicted Traffic Level: {{ prediction }}
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

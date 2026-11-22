@@ -1,0 +1,643 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #333;
+}
+
+
+/* Navbar */
+
+.navbar {
+    background: #1e3a8a;
+    color: white;
+    padding: 18px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+}
+
+
+/* Container */
+
+.container {
+    width: 90%;
+    margin: 35px auto;
+}
+
+.container h1 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.welcome {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+
+/* Statistics */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.stat-card p {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1e3a8a;
+}
+
+
+/* Table */
+
+.table-section {
+    background: white;
+    padding: 25px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+
+    overflow-x: auto;
+}
+
+.table-section h2 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #1e3a8a;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+
+/* Traffic Levels */
+
+.high {
+    background: #dc2626;
+    color: white;
+
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+.medium {
+    background: #f59e0b;
+    color: white;
+
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+.low {
+    background: #16a34a;
+    color: white;
+
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+.empty {
+    padding: 30px;
+    color: #777;
+}
+
+
+
+
+
+/* Dashboard Feature Cards */
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card h3 {
+    color: #1e3a8a;
+    margin-top: 0;
+}
+
+.card p {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.btn {
+    display: inline-block;
+    background: #2563eb;
+    color: white;
+    padding: 11px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background: #1d4ed8;
+}
+
+section.container {
+    margin-top: 35px;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 600px) {
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================= */
+/* INTERACTIVE TRAFFIC MAP */
+/* ============================= */
+
+.map-section {
+    background: white;
+    padding: 25px;
+    margin: 30px auto;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.08);
+}
+
+.map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.map-header h2 {
+    color: #0f172a;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.map-header p {
+    color: #64748b;
+}
+
+.live-badge {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 9px 15px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.map-legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    color: #475569;
+    font-size: 14px;
+}
+
+.dot {
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.dot.green {
+    background: #22c55e;
+}
+
+.dot.orange {
+    background: #f59e0b;
+}
+
+.dot.red {
+    background: #ef4444;
+}
+
+.map-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.map-search input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    min-width: 0;
+}
+
+.map-search input:focus {
+    border-color: #2563eb;
+}
+
+.map-search button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.map-search button:hover {
+    background: #1d4ed8;
+}
+
+#trafficMap {
+    height: 450px;
+    width: 100%;
+    border-radius: 14px;
+    z-index: 1;
+}
+
+.map-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+@media (max-width: 600px) {
+
+    .map-section {
+        padding: 15px;
+    }
+
+    #trafficMap {
+        height: 350px;
+    }
+
+    .map-search button {
+        padding: 10px;
+    }
+
+}
+
+/* ---------------- TRAFFIC ANALYTICS ---------------- */
+
+.analytics-section {
+    margin-top: 35px;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+}
+
+.analytics-section h2 {
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 25px;
+}
+
+.analytics-card {
+    background: #f8fafc;
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    min-width: 0;
+}
+
+.analytics-card h3 {
+    margin-bottom: 20px;
+    color: #334155;
+    font-size: 17px;
+}
+
+.analytics-card canvas {
+    width: 100% !important;
+    max-height: 300px;
+}
+
+#analyticsMessage {
+    margin-top: 15px;
+    color: #64748b;
+}
+
+@media (max-width: 768px) {
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==================================
+   PROFESSIONAL DASHBOARD UI
+================================== */
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+    line-height: 1.5;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(120deg, #172554, #2563eb);
+    padding: 20px 5%;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 21px;
+    letter-spacing: 0.3px;
+}
+
+.nav-links a {
+    padding: 9px 15px;
+    border-radius: 7px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.18);
+}
+
+/* Main headings */
+.container h1 {
+    color: #172554;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.welcome {
+    font-size: 15px;
+    color: #64748b;
+}
+
+/* Statistics cards */
+.stats-container {
+    gap: 22px;
+}
+
+.stat-card {
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #2563eb;
+    border-radius: 14px;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 9px 22px rgba(15, 23, 42, 0.12);
+}
+
+.stat-card h3 {
+    font-size: 15px;
+    color: #64748b;
+}
+
+.stat-card p {
+    color: #1d4ed8;
+}
+
+/* Map and analytics sections */
+.map-section,
+.analytics-section,
+.table-section {
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+    border-radius: 16px;
+}
+
+.map-section h2,
+.analytics-section h2,
+.table-section h2 {
+    color: #172554;
+}
+
+.live-traffic-details {
+    margin-top: 25px;
+}
+
+.traffic-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 18px;
+}
+
+.traffic-alert-section {
+    margin-top: 25px;
+    padding: 18px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Buttons */
+button,
+.btn {
+    transition: 0.25s ease;
+    font-weight: 600;
+}
+
+button:hover,
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+#fetchTrafficBtn {
+    margin-top: 12px;
+    padding: 12px 20px;
+    background: #1d4ed8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#fetchTrafficBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Analytics cards */
+.analytics-card {
+    border-radius: 14px;
+    transition: transform 0.2s;
+}
+
+.analytics-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Table */
+.table-section {
+    margin-top: 30px;
+}
+
+table {
+    min-width: 850px;
+}
+
+tbody tr:hover {
+    background: #eff6ff;
+}
+
+td, th {
+    padding: 14px 12px;
+}
+
+/* Feature cards */
+.card {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    transition: 0.25s;
+}
+
+.card:hover {
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.10);
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .navbar {
+        padding: 16px 4%;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .nav-links a {
+        margin: 0 5px;
+        font-size: 14px;
+    }
+
+    .container {
+        width: 94%;
+        margin: 22px auto;
+    }
+
+    .container h1 {
+        font-size: 25px;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .map-section,
+    .analytics-section,
+    .table-section {
+        padding: 16px;
+    }
+
+    .map-search {
+        flex-direction: column;
+    }
+
+    .map-search button {
+        width: 100%;
+    }
+
+    #trafficMap {
+        height: 320px;
+    }
+
+    .traffic-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .table-section {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 380px) {
+    .traffic-cards {
+        grid-template-columns: 1fr;
+    }
+}
+

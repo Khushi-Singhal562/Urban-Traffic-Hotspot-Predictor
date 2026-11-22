@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Login</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/auth.css') }}">
+
+</head>
+
+<body>
+
+<div class="auth-container">
+
+    <h1>Welcome Back</h1>
+
+    <p>Login to Urban Traffic Hotspot Predictor</p>
+
+
+    <form method="POST" action="{{ url_for('login') }}">
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+        >
+
+
+        <label>Password</label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            required
+        >
+
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+
+    <p>
+        Don't have an account?
+
+        <a href="{{ url_for('register') }}">
+            Register
+        </a>
+
+    </p>
+
+</div>
+
+</body>
+
+</html>

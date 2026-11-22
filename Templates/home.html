@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Traffic Hotspot Predictor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <h2>Urban Traffic Hotspot Predictor</h2>
+
+        <div>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+
+        <h1>Urban Traffic Hotspot Predictor</h1>
+
+        <p>
+            Analyze traffic data and identify areas with high
+            traffic congestion using Data Analytics and Machine Learning.
+        </p>
+
+        <!--<a href="/about" class="btn">Explore Project</a>-->
+
+        
+        <a href="{{ url_for('login') }}" class="btn">Login</a>
+
+    <a href="{{ url_for('register') }}" class="btn">Sign Up</a>
+
+    </section>
+
+
+
+   <!--<section class="home-buttons">
+    <h2>Welcome to Urban Traffic Hotspot Predictor</h2>
+
+    <p>Analyze traffic hotspots and predict traffic levels using Machine Learning.</p>
+
+    
+</section>--> 
+
+</body>
+</html>

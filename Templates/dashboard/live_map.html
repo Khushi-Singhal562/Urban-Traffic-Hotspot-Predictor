@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Traffic Map | Urban Traffic</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <style>
+        body {
+            margin: 0;
+            background: #0b1120;
+            color: #f1f5f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .map-container {
+            padding: 25px;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .map-header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .map-header p {
+            color: #94a3b8;
+        }
+
+        .map-status {
+            background: #172554;
+            color: #93c5fd;
+            padding: 10px 16px;
+            border-radius: 20px;
+        }
+
+        .map-card {
+            background: #111827;
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid #263244;
+        }
+
+        #trafficMap {
+            width: 100%;
+            height: 570px;
+            border-radius: 12px;
+            z-index: 1;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding: 18px 5px 5px;
+            color: #cbd5e1;
+        }
+
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .low { background: #22c55e; }
+        .medium { background: #f59e0b; }
+        .high { background: #ef4444; }
+
+        .map-note {
+            margin-top: 15px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .back-link {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Urban Traffic Hotspot Predictor</div>
+
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('hotspots') }}">Hotspots</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</nav>
+
+<div class="map-container">
+
+    <div class="map-header">
+        <div>
+            <h1>Live Traffic Map</h1>
+            <p>Interactive traffic monitoring map</p>
+        </div>
+
+        <div class="map-status">
+            Map Connected
+        </div>
+    </div>
+
+    <div class="map-card">
+        <div id="trafficMap"></div>
+
+        <div class="legend">
+            <span><i class="dot low"></i>Low Traffic</span>
+            <span><i class="dot medium"></i>Medium Traffic</span>
+            <span><i class="dot high"></i>High Traffic</span>
+        </div>
+    </div>
+
+    <p class="map-note">
+        Note: Current markers are sample visualization only.
+        Real traffic data integration will be added in the next step.
+    </p>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Map centered on Delhi NCR
+    const map = L.map("trafficMap").setView([28.6139, 77.2090], 11);
+
+    // OpenStreetMap free map layer
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    // SAMPLE locations: visualization only, not live traffic
+    const sampleTraffic = [
+        {
+            name: "Connaught Place",
+            lat: 28.6315,
+            lng: 77.2167,
+            level: "High"
+        },
+        {
+            name: "India Gate",
+            lat: 28.6129,
+            lng: 77.2295,
+            level: "Medium"
+        },
+        {
+            name: "Noida Sector 18",
+            lat: 28.5700,
+            lng: 77.3219,
+            level: "High"
+        },
+        {
+            name: "Greater Noida",
+            lat: 28.4744,
+            lng: 77.5040,
+            level: "Low"
+        }
+    ];
+
+    function getColor(level) {
+        if (level === "High") return "#ef4444";
+        if (level === "Medium") return "#f59e0b";
+        return "#22c55e";
+    }
+
+    sampleTraffic.forEach(function (traffic) {
+        const marker = L.circleMarker(
+            [traffic.lat, traffic.lng],
+            {
+                radius: 10,
+                color: getColor(traffic.level),
+                fillColor: getColor(traffic.level),
+                fillOpacity: 0.85,
+                weight: 2
+            }
+        ).addTo(map);
+
+        marker.bindPopup(`
+            <b>${traffic.name}</b><br>
+            Traffic Level: ${traffic.level}<br>
+            <small>Sample marker - not live data</small>
+        `);
+    });
+</script>
+
+</body>
+</html>

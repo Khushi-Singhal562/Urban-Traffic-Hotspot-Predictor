@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic Hotspots</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Traffic Hotspot Analysis</h1>
+
+        <p>
+            This page shows traffic level analysis and high traffic hotspots.
+        </p>
+
+
+        <!-- Traffic Level Analysis -->
+
+        <h2>Traffic Level Analysis</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Traffic Level</th>
+                    <th>Total Records</th>
+                    <th>Total Vehicles</th>
+                    <th>Average Speed</th>
+                    <th>Average Density</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in hotspot_data %}
+
+                <tr>
+
+                    <td>{{ row.traffic_level }}</td>
+
+                    <td>{{ row.total_records }}</td>
+
+                    <td>{{ row.total_vehicles }}</td>
+
+                    <td>
+                        {{ "%.2f"|format(row.average_speed or 0) }}
+                    </td>
+
+                    <td>
+                        {{ "%.2f"|format(row.average_density or 0) }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        <!-- High Traffic Hotspots -->
+
+        <h2>High Traffic Hotspots</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Location</th>
+                    <th>Hotspot Count</th>
+                    <th>Average Vehicles</th>
+                    <th>Average Density</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in high_traffic_data %}
+
+                <tr>
+
+                    <td>{{ row.location }}</td>
+
+                    <td>{{ row.hotspot_count }}</td>
+
+                    <td>
+                        {{ "%.2f"|format(row.average_vehicles or 0) }}
+                    </td>
+
+                    <td>
+                        {{ "%.2f"|format(row.average_density or 0) }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        <br>
+
+        <a href="{{ url_for('dashboard') }}">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+
+</html>

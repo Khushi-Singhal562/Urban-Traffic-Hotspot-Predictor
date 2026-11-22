@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic Reports</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 25px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a class="back" href="/dashboard">← Back to Dashboard</a>
+
+    <h1>Traffic Reports</h1>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Vehicle Count</th>
+                    <th>Average Speed</th>
+                    <th>Traffic Density</th>
+                    <th>Traffic Level</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in traffic_records %}
+                <tr>
+                    <td>{{ record.location }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.time }}</td>
+                    <td>{{ record.vehicle_count }}</td>
+                    <td>{{ record.average_speed }}</td>
+                    <td>{{ record.traffic_density }}</td>
+                    <td>{{ record.traffic_level }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">No traffic records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
